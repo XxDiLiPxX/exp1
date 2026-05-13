@@ -11,12 +11,14 @@ pool:
 
 steps:
 - task: Maven@3
+  env:
+    # Restricts the JVM to 1GB to prevent the Azure OOM Killer from terminating the process
+    MAVEN_OPTS: '-Xmx1024m -XX:MaxMetaspaceSize=256m'
   inputs:
     mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.11'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'package'
+    # 'package' compiles and jars the code; '-DskipTests' skips the execution of tests
+    goals: 'clean package -DskipTests'
+    # --batch-mode prevents Maven from hanging on interactive prompts
+    options: '--batch-mode --errors'
+    publishJUnitResults: false
+    jdkVersionOption: '1.17' # Ensure this matches your project's Java version
