@@ -22,3 +22,16 @@ steps:
     options: '--batch-mode --errors'
     publishJUnitResults: false
     jdkVersionOption: '1.17' # Ensure this matches your project's Java version
+- task: CopyFiles@2
+  displayName: 'Copy pom.xml to Staging'
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)'
+    Contents: 'pom.xml'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish pom.xml Artifact'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
