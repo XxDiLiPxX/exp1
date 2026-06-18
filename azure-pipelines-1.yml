@@ -23,14 +23,26 @@ steps:
     mavenPomFile: 'pom.xml'
     mavenOptions: '-Xmx3072m'
     javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.17'               # Fixed typo: '1.17' instead of '1.1'
+    jdkVersionOption: '1.17'
     jdkArchitectureOption: 'x64'
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'package'                 # Combined your 'clean compile' and 'package' goals
+    goals: 'package'
+
+# Step 3: Copy the XML files (Runs even if tests fail!)
 - task: CopyFiles@2
   displayName: 'Copy Raw Test XML to Staging'
+  condition: succeededOrFailed() 
   inputs:
     SourceFolder: '$(system.defaultworkingdirectory)'
     Contents: '**/target/surefire-reports/*.xml'
     TargetFolder: '$(build.artifactstagingdirectory)/TestReports'
+
+# Step 4: Publish the staging directory (Runs even if tests fail!)
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifacts'
+  condition: succeededOrFailed()
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
