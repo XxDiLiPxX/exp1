@@ -27,4 +27,4 @@ steps:
     jdkArchitectureOption: 'x64'
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'clean package'                 # Combined your 'clean compile' and 'package' goals
+    goals: 'package'                 # Combined your 'clean compile' and 'package' goals
