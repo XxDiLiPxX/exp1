@@ -28,3 +28,9 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'                 # Combined your 'clean compile' and 'package' goals
+- task: CopyFiles@2
+  displayName: 'Copy Raw Test XML to Staging'
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)'
+    Contents: '**/target/surefire-reports/*.xml'
+    TargetFolder: '$(build.artifactstagingdirectory)/TestReports'
